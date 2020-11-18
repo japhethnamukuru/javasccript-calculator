@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>javascript calculator</title>
+	<link rel="stylesheet" type="text/css" href="cal.css">	
+</head>
+<body>
+	<div>
+		<h3>core javascript calculator</h3>
+	</div>
+	<div class="calc">
+		<div class="calc_display">0</div>
+
+		<!-- the calculator keys with operators supplied with 
+			data action attributes to describe what they do  -->
+
+		<div class="calc_keys">
+			<button class="key--operator" data-action="add">+</button>
+			<button class="key--operator" data-action="subtract">-</button>
+			<button class="key--operator" data-action="multiply">&times;</button>
+			<button class="key--operator" data-action="devide">/</button>
+			<button>7</button>
+			<button>8</button>
+			<button>9</button>
+			<button>4</button>
+			<button>5</button>
+			<button>6</button>
+			<button>1</button>
+			<button>2</button>
+			<button>3</button>
+			<button>0</button>
+			<button data-action="decimal">.</button>
+			<button data-action="clear">AC</button>
+			<button class="key--equal" data-action="calculate">=</button>
+
+			<!-- // end of display keys -->
+
+		</div>
+	</div>
+	<script type="text/javascript" src="cal.js"></script>
+</body>
+</html>
