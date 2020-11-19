@@ -34,7 +34,7 @@ function inputDecimal(dot) {
 		calculator.waitingForSecondOperand = false;
 		return;
 	}
-	
+
 	// if the display value property does not contain a decimal pont
 	if (!calculator.displayValue.includes(dot)) {
 		// append the decimal point
@@ -65,7 +65,7 @@ function handleOperator(nextOperator) {
 	}
 	else if (operator) {
 		const result = calculate(firstOperand, inputValue, operator);
-		calculator.displayValue = String(result);
+		calculator.displayValue = `${parseFloat(result.toFixed(7))}`;
 		calculator.firstOperand = result;
 	} 
 
@@ -106,9 +106,10 @@ updateDisplay();
 
 /* step 2 handling key events */
 const keys = document.querySelector('.calculator-keys');
-keys.addEventListener('click', (event) => {
+keys.addEventListener('click', event => {
 	// access the clicked element
 	const { target } = event;
+	const { value } = target;
 
 	//check if the  clicked  element is button
 	// if not exit form the function
@@ -116,25 +117,26 @@ keys.addEventListener('click', (event) => {
 		return;
 	}
 
-	if (target.classList.contains('operator')) {
-		handleOperator(target.value);
-		updateDisplay();
-		return;
+	switch (value) {
+		case '+':
+		case '-':
+		case '*':
+		case '/':
+		case '=':
+			handleOperator(value);
+			break;
+		case '.':
+			inputDecimal(value);
+			break;
+		case 'all-clear':
+			resetCalculator();
+			break;
+		default:
+			// check if the key is an interger
+			if (Number.isInteger(parseFloat(value))) {
+				inputDigit(value);
+			}			
 	}
-
-	if (target.classList.contains('decimal')) {
-		inputDecimal(target.value);
-		updateDisplay();
-		return;
-	}
-
-	if (target.classList.contains('all-clear')) {
-		resetCalculator();
-		updateDisplay();
-		return;
-	}
-
-	inputDigit(target.value);
 	updateDisplay();
 });
 
