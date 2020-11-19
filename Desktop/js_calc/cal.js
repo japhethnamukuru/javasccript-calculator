@@ -15,6 +15,7 @@ keys.addEventListener('click', e => {
 		/* if key misses the data-action attribute, it must be a number key */
 		if (!action) {
 			console.log('number key');
+			calc.dataset.previousKey = 'number';
 		}
 
 		/* if the key has a data-action attribute then that is an operator */
@@ -22,7 +23,7 @@ keys.addEventListener('click', e => {
 			action === 'add' ||
 			action === 'subtract' ||
 			action === 'multiply' ||
-			action ==='devide'
+			action ==='divide'
 			) {
 			console.log('operator_key');
 		} 
@@ -30,14 +31,17 @@ keys.addEventListener('click', e => {
 		/* for special function keys i.e decimal, equal and clear */
 		if (action === 'decimal') {
 			console.log('decimal key');
+			calc.dataset.previousKey = 'decimal';
 		} 
 
 		if (action === 'clear') {
 			console.log('clear key');
+			calc.dataset.previousKeyType = 'clear';
 		}
 
 		if (action === 'calculate') {
 			console.log('equal key');
+			calc.dataset.previousKey = 'calculate';
 		}
 	}
 });
@@ -75,32 +79,28 @@ keys.addEventListener('click', e => {
 			display.textContent = displayedNum + '.';
 		}
 
-		/*highlighting a clicked operator to show its activw state to the user 
+		/*highlighting a clicked operator to show its active state to the user 
 		using the is-depressed class on the key */
 		if (
 			action === 'add' ||
 			action === 'subtract' ||
 			action === 'multiply' ||
-			action === 'devide') {
+			action === 'divide') {
 			key.classList.add('is-depressed');
+			calc.dataset.previousKeyType = 'operator';
 
-			// adding custom attribute (data-previous-key-type)to
-			// check if prevoius key is operator 
-			calculator.dataset.previousKeyType = 'operator';
+			/* using an attribute to store the first number and the operator */
+			calc.dataset.firstValue = displayedNum;
+			calc.dataset.operator = action;
+
+
 		} 
 
-		/* hitting a number key after an operator should cause the previous 
-		display to disappear and be replaced with the current key input an the 
-		operator to release its is-depressed state */
-
-		// remove is-depressed class from all keys
-		Array.from(key.parentNode.children).forEach(k => k.classList.remove('is-depressed'));
-
-		/* replacing the displayed number if the previous key is an operator */
-		const previousKeyType = calc.dataset.previousType;
-
+		/* replacing the displayed number with a clicked number */
+		const previousKeyType = calc.dataset.previousKeyType;
 		if (!action) {
-			if (displayedNum === '0' || previousKeyType === 'operator') {
+			if (displayedNum === '0' ||
+				previousKeyType === 'operator') {
 				display.textContent = keyContent;
 			}
 			else {
@@ -108,9 +108,70 @@ keys.addEventListener('click', e => {
 			}
 		}
 
+		// the calculations
+		if (action === 'calculate') {			
+			const firstValue = calc.dataset.firstValue;
+			const operator = calc.dataset.operator;
+			const secondValue = displayedNum;
+
+			display.textContent = calculate(firstValue,operator,secondValue);
+		} 
+		/* creating the calculate function 
+		const calculate = (n1, operator, n2) => {
+			let result = ''
+
+			if (operator === 'add') {
+				result = n1 + n2;
+			}
+			else if (operator === 'subtract') {
+				result = n1 - n2;
+			}
+			else if (operator === 'multiply') {
+				result = n1 * n2;
+			}
+			else if (operator === 'divide') {
+				result = n1 / n2;
+			}
+			return result;
+		} */
+
+		// using parseFloat formular to convert the string input to float
+		const calculate = (n1, operator, n2) => {
+			let result = '';
+
+			if (operator === 'add') {
+				result = parseFloat(n1) + parseFloat(n2);
+			}
+			else if (operator === 'subtract') {
+				result = parseFloat(n1) - parseFloat(n2);
+			}
+			else if (operator === 'multiply') {
+				result = parseFloat(n1) * parseFloat(n2);
+			}
+			else if (operator === 'divide') {
+				result = parseFloat(n1) / parseFloat(n2);
+			}
+			return result;
+		}
+
+		// do nothing if the string has a dot(.)
+		if (!displayedNum.includes('.')) {
+			display.textContent = displayedNum + '.';
+		}
+
+		/*if (action === 'decimal') {
+			if (!displayedNum.includes('.')) {
+				display.textContent = displayedNum + '.';
+			}
+			else if (previousKeyType === 'operator') {
+				display.textContent = '0.';
+			}
+			calc.dataset.previousKeyType = 'decimal';
+		} */
+
+		// removing  the .is-depressed  class  from all keys
+		Array.from(key.parentNode.children).forEach(k => k.classList.remove('is-depressed'));
+
 	}
 });
-
-
-
 // equals stage
