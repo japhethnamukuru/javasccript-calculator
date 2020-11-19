@@ -1,177 +1,148 @@
-/* declaring constants */
+/* creating the calculator object for tracking of files */
+const calculator = {
+	// store string input in displayValue, the first operand and the
+	//second operand 
+	displayValue: '0',
+	firstOperand: null,
+	waitingForSecondOperand: false,
+	operator: null,
+};
 
-const calc = document.querySelector('.calc');
-const keys = calc.querySelector('.calc_keys');
+// function for inputting the digits
 
-/* listening and determining the type of key pressed */
+function inputDigit(digit) {
+	const { displayValue, waitingForSecondOperand } = calculator;
 
-keys.addEventListener('click', e => {
-	if (e.target.matches('button')) {
-		/* using the data-action attribute to determine the type of key pressed */
-
-		const key = e.target;
-		const action = key.dataset.action;
-
-		/* if key misses the data-action attribute, it must be a number key */
-		if (!action) {
-			console.log('number key');
-			calc.dataset.previousKey = 'number';
-		}
-
-		/* if the key has a data-action attribute then that is an operator */
-		if (
-			action === 'add' ||
-			action === 'subtract' ||
-			action === 'multiply' ||
-			action ==='divide'
-			) {
-			console.log('operator_key');
-		} 
-
-		/* for special function keys i.e decimal, equal and clear */
-		if (action === 'decimal') {
-			console.log('decimal key');
-			calc.dataset.previousKey = 'decimal';
-		} 
-
-		if (action === 'clear') {
-			console.log('clear key');
-			calc.dataset.previousKeyType = 'clear';
-		}
-
-		if (action === 'calculate') {
-			console.log('equal key');
-			calc.dataset.previousKey = 'calculate';
-		}
+	if (waitingForSecondOperand === true) {
+		calculator.displayValue = digit;
+		calculator.waitingForSecondOperand = false;
 	}
-});
-
-/* getting the current and the previously clicked keys using the textContent 
-property and .calc_display. */
-const display = document.querySelector('.calc_display');
-
-keys.addEventListener('click', e => {
-	if (e.target.matches('button')) {
-		const key = e.target;
-		const action = key.dataset.action;
-		const keyContent = key.textContent;
-		const displayedNum = display.textContent;
-
-		/* replacing the default output(0) with the output of the clicked key */
-		if (!action) {
-			if (displayedNum === '0') {
-				display.textContent = keyContent;
-			}
-		}
-
-		/* appending current clicked number to the previous by concatination */
-		if (!action) {
-			if (displayedNum === '0') {
-				display.textContent = keyContent;
-			}
-			else {
-				display.textContent = displayedNum + keyContent;
-			}
-		}
-
-		/* concatinating the decimal key(.) to the  displayed num */
-		if (action ==='decimal') {
-			display.textContent = displayedNum + '.';
-		}
-
-		/*highlighting a clicked operator to show its active state to the user 
-		using the is-depressed class on the key */
-		if (
-			action === 'add' ||
-			action === 'subtract' ||
-			action === 'multiply' ||
-			action === 'divide') {
-			key.classList.add('is-depressed');
-			calc.dataset.previousKeyType = 'operator';
-
-			/* using an attribute to store the first number and the operator */
-			calc.dataset.firstValue = displayedNum;
-			calc.dataset.operator = action;
-
-
-		} 
-
-		/* replacing the displayed number with a clicked number */
-		const previousKeyType = calc.dataset.previousKeyType;
-		if (!action) {
-			if (displayedNum === '0' ||
-				previousKeyType === 'operator') {
-				display.textContent = keyContent;
-			}
-			else {
-				display.textContent = displayedNum + keyContent;
-			}
-		}
-
-		// the calculations
-		if (action === 'calculate') {			
-			const firstValue = calc.dataset.firstValue;
-			const operator = calc.dataset.operator;
-			const secondValue = displayedNum;
-
-			display.textContent = calculate(firstValue,operator,secondValue);
-		} 
-		/* creating the calculate function 
-		const calculate = (n1, operator, n2) => {
-			let result = ''
-
-			if (operator === 'add') {
-				result = n1 + n2;
-			}
-			else if (operator === 'subtract') {
-				result = n1 - n2;
-			}
-			else if (operator === 'multiply') {
-				result = n1 * n2;
-			}
-			else if (operator === 'divide') {
-				result = n1 / n2;
-			}
-			return result;
-		} */
-
-		// using parseFloat formular to convert the string input to float
-		const calculate = (n1, operator, n2) => {
-			let result = '';
-
-			if (operator === 'add') {
-				result = parseFloat(n1) + parseFloat(n2);
-			}
-			else if (operator === 'subtract') {
-				result = parseFloat(n1) - parseFloat(n2);
-			}
-			else if (operator === 'multiply') {
-				result = parseFloat(n1) * parseFloat(n2);
-			}
-			else if (operator === 'divide') {
-				result = parseFloat(n1) / parseFloat(n2);
-			}
-			return result;
-		}
-
-		// do nothing if the string has a dot(.)
-		if (!displayedNum.includes('.')) {
-			display.textContent = displayedNum + '.';
-		}
-
-		/*if (action === 'decimal') {
-			if (!displayedNum.includes('.')) {
-				display.textContent = displayedNum + '.';
-			}
-			else if (previousKeyType === 'operator') {
-				display.textContent = '0.';
-			}
-			calc.dataset.previousKeyType = 'decimal';
-		} */
-
-		// removing  the .is-depressed  class  from all keys
-		Array.from(key.parentNode.children).forEach(k => k.classList.remove('is-depressed'));
+	else{
+		// overite the displayValue if the current value is 0 otherwise append to it 
+		// ternary operator(?) used to check if the  current displayed value is zero
+		calculator.displayValue = displayValue === '0' ? digit : displayValue + digit;
 
 	}
+	
+	console.log(calculator);
+}
+
+// inputting decimals
+function inputDecimal(dot) {
+	if (calculator.waitingForSecondOperand === true) {
+		calculator.displayValue = '0.';
+		calculator.waitingForSecondOperand = false;
+		return;
+	}
+	
+	// if the display value property does not contain a decimal pont
+	if (!calculator.displayValue.includes(dot)) {
+		// append the decimal point
+		calculator.displayValue += dot;
+	} 
+}
+
+//handling operators
+function handleOperator(nextOperator) {
+	// destructure the properties on the calculator object
+	const { firstOperand, displayValue, operator } = calculator;
+
+	/* use 'parseFloat' to convert string contents of displayValue
+	 to a floating point number */
+	const inputValue = parseFloat(displayValue);
+
+	if (operator && calculator.waitingForSecondOperand) {
+		calculator.operator = nextOperator;
+		console.log(calculator);
+		return;
+	}
+
+	/* verify that the 'firstOperand' is null and that the 'inputValue'
+	is not of type 'NaN' */
+	if (firstOperand === null && !isNaN(inputValue)) {
+		// update the first operand property
+		calculator.firstOperand = inputValue;
+	}
+	else if (operator) {
+		const result = calculate(firstOperand, inputValue, operator);
+		calculator.displayValue = String(result);
+		calculator.firstOperand = result;
+	} 
+
+	calculator.waitingForSecondOperand = true;
+	calculator.operator = nextOperator;
+
+	console.log(calculator);
+
+}
+
+// function to handle an operator after the second operand
+function calculate(firstOperand, secondOperand, operator) {
+	if (operator === '+') {
+		return firstOperand + secondOperand;
+	}
+	else if (operator === '-') {
+		return firstOperand - secondOperand;
+	}
+	else if (operator === '*') {
+		return firstOperand * secondOperand;
+	}
+	else if (operator === '/') {
+		return firstOperand / secondOperand;
+	}
+
+	return secondOperand;
+}
+
+/* step 1 function for updating the display screen */
+function updateDisplay() {
+	// select the element with class of 'calculator-screen'
+	const display= document.querySelector('.calculator-screen');
+
+	// update the value of the  element with the content of 'displayValue'
+	display.value = calculator.displayValue;  
+}
+updateDisplay();
+
+/* step 2 handling key events */
+const keys = document.querySelector('.calculator-keys');
+keys.addEventListener('click', (event) => {
+	// access the clicked element
+	const { target } = event;
+
+	//check if the  clicked  element is button
+	// if not exit form the function
+	if (!target.matches('button')) {
+		return;
+	}
+
+	if (target.classList.contains('operator')) {
+		handleOperator(target.value);
+		updateDisplay();
+		return;
+	}
+
+	if (target.classList.contains('decimal')) {
+		inputDecimal(target.value);
+		updateDisplay();
+		return;
+	}
+
+	if (target.classList.contains('all-clear')) {
+		resetCalculator();
+		updateDisplay();
+		return;
+	}
+
+	inputDigit(target.value);
+	updateDisplay();
 });
-// equals stage
+
+// function to reset the calculator to its initial state
+function resetCalculator() {
+	calculator.displayValue = '0';
+	calculator.firstOperand = null;
+	calculator.waitingForSecondOperand = false;
+	calculator.operator = null;
+	console.log(calculator);
+}

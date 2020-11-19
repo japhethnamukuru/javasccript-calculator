@@ -7,37 +7,41 @@
 </head>
 <body>
 	<div>
-		<h3>core javascript calculator</h3>
-	</div>
-	<div class="calc">
-		<div class="calc_display">0</div>
+    		<h3></h3>
+    <div class="calculator">
 
-		<!-- the calculator keys with operators supplied with 
-			data action attributes to describe what they do  -->
+      <input type="text" class="calculator-screen" value="0" disabled />
+      
+      <div class="calculator-keys">
+        
+        <button type="button" class="operator" value="+">+</button>
+        <button type="button" class="operator" value="-">-</button>
+        <button type="button" class="operator" value="*">&times;</button>
+        <button type="button" class="operator" value="/">&divide;</button>
 
-		<div class="calc_keys">
-			<button class="key--operator" data-action="add">+</button>
-			<button class="key--operator" data-action="subtract">-</button>
-			<button class="key--operator" data-action="multiply">&times;</button>
-			<button class="key--operator" data-action="divide">/</button>
-			<button>7</button>
-			<button>8</button>
-			<button>9</button>
-			<button>4</button>
-			<button>5</button>
-			<button>6</button>
-			<button>1</button>
-			<button>2</button>
-			<button>3</button>
-			<button>0</button>
-			<button data-action="decimal">.</button>
-			<button data-action="clear">AC</button>
-			<button class="key--equal" data-action="calculate">=</button>
+        <button type="button" value="7">7</button>
+        <button type="button" value="8">8</button>
+        <button type="button" value="9">9</button>
 
-			<!-- // end of display keys -->
 
-		</div>
-	</div>
+        <button type="button" value="4">4</button>
+        <button type="button" value="5">5</button>
+        <button type="button" value="6">6</button>
+
+
+        <button type="button" value="1">1</button>
+        <button type="button" value="2">2</button>
+        <button type="button" value="3">3</button>
+
+
+        <button type="button" value="0">0</button>
+        <button type="button" class="decimal function" value=".">.</button>
+        <button type="button" class="all-clear function" value="all-clear">AC</button>
+
+        <button type="button" class="equal-sign operator" value="=">=</button>
+
+      </div>
+    </div>
 	<script type="text/javascript" src="cal.js"></script>
 </body>
 </html>
